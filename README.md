@@ -6,8 +6,6 @@
 
 Language: **Java JDK 8**
 
-Additional Libraries: **https://github.com/stleary/JSON-java**
-
 Input data: **http://traces.cs.umass.edu/index.php/CpuMem/CpuMem**
 
 Pagination size: **Define**
