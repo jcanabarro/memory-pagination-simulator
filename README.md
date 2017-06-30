@@ -46,4 +46,4 @@ The input file is a **txt** available on **Specification**:
   B5E723DC
   B5E723DC
 ```
-This represents the memory access, after will be implemented an ** reference string ** considering the paging size and address.
+This represents the memory access, after will be implemented an **reference string** considering the paging size and address.
