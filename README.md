@@ -8,11 +8,11 @@ Language: **Java JDK 8**
 
 Input data: **http://traces.cs.umass.edu/index.php/CpuMem/CpuMem**
 
-Pagination size: **Define**
+Pagination size: **2¹² = 4096 bytes (4MB)**
 
-Number of bits to displacement: **Define**
+Number of bits to displacement: **12 bits**
 
-Number of bits to address: **Define**
+Number of bits to address: **20 bits**
 
 Size of logic adress: **32 bits**
 
@@ -20,7 +20,7 @@ Size of logic adress: **32 bits**
 
 The program may be call using:
 
-`java -jar program.jar [file][frames][method|all]`
+`java -jar program.jar [file][method|all][size]`
 
 Where:
 
@@ -30,9 +30,9 @@ Where:
 
 3. `file` The input file.
 
-4. `frames` Number of frames for pagination. 
+4.`method|all` Select which method will be executed( this policies will be decided).  
 
-5. `method|all` Select which method will be executed( this policies will be decided). 
+5. `size` The size of each page in bytes, the input consists of an integer which represents a power of two number. 
 
 The input file is a **txt** available on **Specification**:
 
