@@ -30,7 +30,7 @@ Where:
 
 3. `file` The input file.
 
-4.`method|all` Select which method will be executed( this policies will be decided).  
+ 4.`method|all` Select which method will be executed( this policies will be decided).  
 
 5. `size` The size of each page in bytes, the input consists of an integer which represents a power of two number. 
 
