@@ -70,12 +70,17 @@ public class Main {
     private static void readFile (String location) throws IOException {
         ArrayList<String> accessList = new ArrayList<String>();
         String raw;
-        BufferedReader bf = new BufferedReader(new FileReader(location));
+        FileReader fr = new FileReader(location);
+        BufferedReader bf = new BufferedReader(fr);
         while ((raw = bf.readLine()) != null) {
-            accessList.add(new BigInteger(raw, 16).toString(2));
+            long value = Long.parseLong(raw, 16);
+            String binVal = Long.toBinaryString(value);
+            accessList.add(binVal);
         }
         for (String anAccessList : accessList) {
             System.out.println(anAccessList);
         }
+        bf.close();
+        fr.close();
     }
 }
