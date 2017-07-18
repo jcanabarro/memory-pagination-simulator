@@ -24,17 +24,17 @@ The program may be call using:
 
 Where:
 
-1. `java -jar` Invokes the JRE to run the program.
+  1. `java -jar` Invokes the JRE to run the program.
 
-2. `program.jar` The built program location.
+  2. `program.jar` The built program location.
 
-3. `file` The input file.
+  3. `file` The input file.
 
-4.`method|all` Select which method will be executed( this policies will be decided).  
+  4.`method|all` Select which method will be executed (FIFO or Optimal).  
 
-5. `number of frames` The user select how many frames the memory has.   
+  5. `number of frames` The user select how many frames the memory has.   
 
-6. `size` The size of each page in bytes, the input consists of an integer which represents a power of two number, but has a default value if the user does not put it. 
+  6. `size` The size of each page in bytes, the input consists of an integer which represents a power of two number, but has a default value if the user does not put it. 
 
 The input file is a **txt** available on **Specification**:
 
