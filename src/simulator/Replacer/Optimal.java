@@ -1,14 +1,14 @@
 package simulator.Replacer;
 
-import java.util.ArrayList;
+import simulator.Address.LogicalAddress;
 
 public class Optimal extends Replacer {
-    public Optimal (ArrayList<String> accessList, int pageSize, int framesNumber) {
-        super(accessList, pageSize, framesNumber);
+    public Optimal (int framesNumber) {
+        super(framesNumber);
     }
 
     @Override
-    public void run () {
-        //
+    public void inputAddress (LogicalAddress address) {
+
     }
 }

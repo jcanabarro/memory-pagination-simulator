@@ -2,43 +2,36 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
-import java.util.ArrayList;
-
 public abstract class Replacer {
-    private ArrayList<String> accessList;
 
-    private int pageSize;
+    /**
+     * Each frame position have in itself the page that it belong.
+     * This way, we don't need to manage valid/invalid bits inside the pages table.
+     */
+    int[] frames;
 
-    private int framesNumber;
-
-    private int trueOffset;
-
-    private int offset;
-
-    private int pageNumber;
-
-    Replacer (ArrayList<String> accessList, int pageSize, int framesNumber) {
-        this.accessList = accessList;
-        this.pageSize = pageSize;
-        this.framesNumber = framesNumber;
+    Replacer (int framesNumber) {
+        this.frames = new int[framesNumber];
     }
 
-    protected LogicalAddress convertAddress (String logicalAddress) {
-        String temporaryOffset = "";
-        String temporaryPageNumber = "";
-        int i = 0;
-        for (; i < 32 - pageSize; i++){
-            temporaryPageNumber += logicalAddress.charAt(i);
-        }
-        for (; i < 32; i++) {
-            temporaryOffset += logicalAddress.charAt(i);
+    /**
+     * Verify if the address is allocated.
+     * @param page The page identifier.
+     * @return Present/Not present
+     */
+    boolean isAddressPresent (int page){
+        for (int frame : this.frames) {
+            if (page == frame) {
+                return true;
+            }
         }
 
-        offset = Integer.parseInt(temporaryOffset, 2);
-        pageNumber = Integer.parseInt(temporaryPageNumber, 2);
-
-        return new LogicalAddress(offset, pageNumber);
+        return false;
     }
 
-    public abstract void run ();
+    /**
+     * Try to access a determined address.
+     * @param address The logical access address, which will be translated into frame access.
+     */
+    public abstract void inputAddress (LogicalAddress address);
 }

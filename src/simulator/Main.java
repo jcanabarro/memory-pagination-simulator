@@ -2,7 +2,7 @@ package simulator;
 
 import simulator.Exceptions.InvalidArgumentsException;
 import simulator.Exceptions.InvalidFramesNumberException;
-import simulator.Exceptions.InvalidPageLengthSizeException;
+import simulator.Exceptions.InvalidFrameSizeException;
 import simulator.Replacer.FirstInFirstOut;
 import simulator.Replacer.Optimal;
 
@@ -14,50 +14,85 @@ import java.util.Objects;
 
 public class Main {
 
+    /**
+     * Physical localization of input traces.
+     */
     private static String fileLocation;
 
+    /**
+     * Optimal method identifier.
+     */
     private static final int OPTIMAL_METHOD = 1;
 
+    /**
+     * First In, First Out method identifier.
+     */
     private static final int FIFO_METHOD = 2;
 
+    /**
+     * All methods identifier.
+     */
     private static final int ALL_METHODS = 3;
 
+    /**
+     * Total number of frames.
+     */
     private static int frames;
 
-    private static int pageSize = 12;
+    /**
+     * Bits that address each offset inside frame (2^frameSize = frame positions, 2^(32-frameSize) = number of addressable pages).
+     */
+    private static int frameSize = 12;
 
+    /**
+     * The selected simulation method.
+     */
     private static int selectedMethod;
 
+    /**
+     * The input access list.
+     */
     private static ArrayList<String> accessList;
 
+    /**
+     * The simulator entry point.
+     * @param args The command line arguments.
+     */
     public static void main (String[] args) {
         try {
             readArgs(args);
             readFile(fileLocation);
-        } catch (InvalidArgumentsException | InvalidPageLengthSizeException | IOException | InvalidFramesNumberException e) {
+        } catch (InvalidArgumentsException | InvalidFrameSizeException | IOException | InvalidFramesNumberException e) {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        StrategyReplacer replacer;
+        MemoryDispatcher replacer;
         switch (selectedMethod) {
             case ALL_METHODS:
-                replacer = new StrategyReplacer(null);
+                replacer = new MemoryDispatcher(accessList, null, frameSize);
                 break;
             case FIFO_METHOD:
-                replacer = new StrategyReplacer(new FirstInFirstOut(accessList, pageSize, frames));
+                replacer = new MemoryDispatcher(accessList, new FirstInFirstOut(frames), frameSize);
                 break;
             case OPTIMAL_METHOD:
-                replacer = new StrategyReplacer(new Optimal(accessList, pageSize, frames));
+                replacer = new MemoryDispatcher(accessList, new Optimal(frames), frameSize);
                 break;
             default:
-                replacer = new StrategyReplacer(null);
+                replacer = new MemoryDispatcher(accessList, null, frameSize);
                 break;
         }
 
         replacer.run();
     }
 
-    private static void readArgs (String[] arguments) throws InvalidArgumentsException, InvalidPageLengthSizeException, InvalidFramesNumberException {
+    /**
+     * The arguments reader.
+     * @param arguments Array of command line arguments.
+     * @throws InvalidArgumentsException If arguments are invalid (in size or options).
+     * @throws InvalidFrameSizeException If frame size isn't a number between 0 and 31.
+     * @throws InvalidFramesNumberException If negative or invalid number of frames.
+     */
+    private static void readArgs (String[] arguments) throws InvalidArgumentsException, InvalidFrameSizeException, InvalidFramesNumberException {
         if (arguments.length < 3) {
             throw new InvalidArgumentsException();
         }
@@ -85,17 +120,23 @@ public class Main {
 
         if (arguments.length > 3) {
             try {
-                pageSize = Integer.parseInt(arguments[3]);
+                frameSize = Integer.parseInt(arguments[3]);
             } catch (NumberFormatException e) {
-                throw new InvalidPageLengthSizeException();
+                throw new InvalidFrameSizeException();
             }
-            if (pageSize < 0 || pageSize > 31) {
-                throw new InvalidPageLengthSizeException();
+            if (frameSize < 0 || frameSize > 31) {
+                throw new InvalidFrameSizeException();
             }
         }
     }
 
-    private static void readFile (String location) throws IOException {
+    /**
+     * Reads the input file and allocate it's contents to dispatch to the memory manager.
+     * @param location Physical file location.
+     * @throws IOException If cannot open the file.
+     * @throws NumberFormatException If input lines isn't base16 strings.
+     */
+    private static void readFile (String location) throws IOException, NumberFormatException {
         accessList = new ArrayList<>();
         String raw;
         FileReader fr = new FileReader(location);
