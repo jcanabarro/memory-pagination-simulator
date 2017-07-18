@@ -2,7 +2,14 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public abstract class Replacer {
+    /**
+     * The memory access list.
+     */
+    ArrayList<LogicalAddress> accessList;
 
     /**
      * Each frame position have in itself the page that it belong.
@@ -10,8 +17,15 @@ public abstract class Replacer {
      */
     int[] frames;
 
-    Replacer (int framesNumber) {
+    /**
+     * Number of page faults.
+     */
+    int pageFaultCount = 0;
+
+    Replacer (int framesNumber, ArrayList<LogicalAddress> accessList) {
         this.frames = new int[framesNumber];
+        this.accessList = accessList;
+        Arrays.fill(this.frames, -1);
     }
 
     /**
@@ -31,7 +45,6 @@ public abstract class Replacer {
 
     /**
      * Try to access a determined address.
-     * @param address The logical access address, which will be translated into frame access.
      */
-    public abstract void inputAddress (LogicalAddress address);
+    public abstract void run ();
 }

@@ -1,5 +1,6 @@
 package simulator;
 
+import simulator.Address.LogicalAddress;
 import simulator.Exceptions.InvalidArgumentsException;
 import simulator.Exceptions.InvalidFramesNumberException;
 import simulator.Exceptions.InvalidFrameSizeException;
@@ -52,10 +53,11 @@ public class Main {
     /**
      * The input access list.
      */
-    private static ArrayList<String> accessList;
+    private static ArrayList<LogicalAddress> accessList;
 
     /**
      * The simulator entry point.
+     *
      * @param args The command line arguments.
      */
     public static void main (String[] args) {
@@ -69,16 +71,16 @@ public class Main {
         MemoryDispatcher replacer;
         switch (selectedMethod) {
             case ALL_METHODS:
-                replacer = new MemoryDispatcher(accessList, null, frameSize);
+                replacer = new MemoryDispatcher(null, frameSize);
                 break;
             case FIFO_METHOD:
-                replacer = new MemoryDispatcher(accessList, new FirstInFirstOut(frames), frameSize);
+                replacer = new MemoryDispatcher(new FirstInFirstOut(frames, accessList), frameSize);
                 break;
             case OPTIMAL_METHOD:
-                replacer = new MemoryDispatcher(accessList, new Optimal(frames), frameSize);
+                replacer = new MemoryDispatcher(new Optimal(frames, accessList), frameSize);
                 break;
             default:
-                replacer = new MemoryDispatcher(accessList, null, frameSize);
+                replacer = new MemoryDispatcher(null, frameSize);
                 break;
         }
 
@@ -87,9 +89,11 @@ public class Main {
 
     /**
      * The arguments reader.
+     *
      * @param arguments Array of command line arguments.
-     * @throws InvalidArgumentsException If arguments are invalid (in size or options).
-     * @throws InvalidFrameSizeException If frame size isn't a number between 0 and 31.
+     *
+     * @throws InvalidArgumentsException    If arguments are invalid (in size or options).
+     * @throws InvalidFrameSizeException    If frame size isn't a number between 0 and 31.
      * @throws InvalidFramesNumberException If negative or invalid number of frames.
      */
     private static void readArgs (String[] arguments) throws InvalidArgumentsException, InvalidFrameSizeException, InvalidFramesNumberException {
@@ -131,9 +135,30 @@ public class Main {
     }
 
     /**
+     * Translate a raw access string into a readable logical address.
+     * @param logicalAddress Binary string.
+     * @return The logical address that the binary string represent.
+     */
+    private static LogicalAddress translate (String logicalAddress) {
+        String temporaryOffset = "";
+        String temporaryPageNumber = "";
+        int i = 0;
+        for (; i < 32 - frameSize; i++){
+            temporaryPageNumber += logicalAddress.charAt(i);
+        }
+        for (; i < 32; i++) {
+            temporaryOffset += logicalAddress.charAt(i);
+        }
+
+        return new LogicalAddress(Integer.parseInt(temporaryOffset, 2), Integer.parseInt(temporaryPageNumber, 2));
+    }
+
+    /**
      * Reads the input file and allocate it's contents to dispatch to the memory manager.
+     *
      * @param location Physical file location.
-     * @throws IOException If cannot open the file.
+     *
+     * @throws IOException           If cannot open the file.
      * @throws NumberFormatException If input lines isn't base16 strings.
      */
     private static void readFile (String location) throws IOException, NumberFormatException {
@@ -147,7 +172,7 @@ public class Main {
             while (binVal.length() < 32) {
                 binVal = "0" + binVal;
             }
-            accessList.add(binVal);
+            accessList.add(translate(binVal));
         }
         bf.close();
         fr.close();

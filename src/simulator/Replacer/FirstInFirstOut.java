@@ -2,29 +2,36 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
+import java.util.ArrayList;
+
 public class FirstInFirstOut extends Replacer {
 
     /**
-     * Next frame to be substituted.
+     * Next frame to be replaced.
      */
     private int nextVictim = 0;
 
     /**
-     * Number of page faults.
+     * Initializa new FIFO instance.
+     *
+     * @param framesNumber Number of frames.
      */
-    private int pageFaultCount = 0;
-
-    public FirstInFirstOut (int framesNumber) {
-        super(framesNumber);
+    public FirstInFirstOut (int framesNumber, ArrayList<LogicalAddress> accessList) {
+        super(framesNumber, accessList);
     }
 
+    /**
+     * Execute the memory access.
+     */
     @Override
-    public void inputAddress (LogicalAddress address) {
-        if (!isAddressPresent(address.getPageNumber())){
-            frames[nextVictim] = address.getPageNumber();
-            nextVictim = (nextVictim + 1) % this.frames.length;
-            pageFaultCount++;
-            System.out.println("Page fault #" + pageFaultCount + " at address " + address.getPageNumber());
+    public void run () {
+        for (LogicalAddress address : this.accessList) {
+            if (!isAddressPresent(address.getPageNumber())) {
+                frames[nextVictim] = address.getPageNumber();
+                nextVictim = (nextVictim + 1) % this.frames.length;
+                pageFaultCount++;
+                System.out.println("Page fault #" + pageFaultCount + " at address " + address.getPageNumber());
+            }
         }
     }
 }
