@@ -30,7 +30,7 @@ Where:
 
   3. `file` The input file.
 
-  4.`method|all` Select which method will be executed (FIFO or Optimal).  
+  4.`method|all` Select which method will be executed (fifo or optimal).  
 
   5. `number of frames` The user select how many frames the memory has.   
 
