@@ -7,7 +7,10 @@ import java.util.Arrays;
 
 public class Optimal extends Replacer {
 
-    private int pagePosition[];
+    private final static int EMPTY = -1;
+
+    private int nextUseAuxiliar[];
+
     /**
      * Initialize new Optimal instance.
      *
@@ -15,39 +18,53 @@ public class Optimal extends Replacer {
      */
     public Optimal (int framesNumber, ArrayList<LogicalAddress> accessList) {
         super(framesNumber, accessList);
-        pagePosition = new int[framesNumber];
-        Arrays.fill(pagePosition, -1);
+        nextUseAuxiliar = new int[framesNumber];
+        Arrays.fill(nextUseAuxiliar, EMPTY);
     }
 
-    private int distanceNextTime(int start, int andress) {
-        for(int i = start; i < this.accessList.size(); i++) {
-            if(accessList.get(i).getPageNumber() == andress) {
-                int distance = i - start;
-                return distance;
+    private int distanceToNextUse (int start, int address) {
+        for (int i = start + 1; i < this.accessList.size(); i++) {
+            if (accessList.get(i).getPageNumber() == address) {
+                return i - start;
             }
         }
 
-        return -1;
+        return EMPTY;
     }
 
-    private int getNextVictim (int start) {
-        int next = -1;
-        int distance = 0;
-        int tmpDistance = -2;
-        for(int i = 0; i < frames.length; i++) {
-            if(frames[i] == -1)
+    private int getNextVictim () {
+        int biggestValue = 0;
+        int indexOfBiggestValue = EMPTY;
+        for (int i = 0; i < nextUseAuxiliar.length; i++) {
+            if (nextUseAuxiliar[i] == EMPTY) {
                 return i;
-
-            tmpDistance = distanceNextTime(start, frames[i]);
-            if(tmpDistance == -1)
-                return i;
-
-            if(tmpDistance > distance) {
-                distance = tmpDistance;
-                next = i;
+            } else if (nextUseAuxiliar[i] >= biggestValue) {
+                biggestValue = nextUseAuxiliar[i];
+                indexOfBiggestValue = i;
             }
         }
-        return next;
+
+        return indexOfBiggestValue;
+    }
+
+    private void updateNextUseAuxiliar(int from, int newest) {
+        for (int i = 0; i < nextUseAuxiliar.length; i++) {
+            if (i == newest || nextUseAuxiliar[i] == 1) {
+                nextUseAuxiliar[i] = distanceToNextUse(from, frames[newest]);
+            } else if (nextUseAuxiliar[i] != EMPTY) {
+                nextUseAuxiliar[i]--;
+            }
+//            System.out.print(nextUseAuxiliar[i] + ",");
+        }
+//        System.out.println("");
+    }
+
+    private void updateNextUseAuxiliar() {
+        for (int i = 0; i < nextUseAuxiliar.length; i++) {
+            if (nextUseAuxiliar[i] != EMPTY) {
+                nextUseAuxiliar[i]--;
+            }
+        }
     }
 
     /**
@@ -57,11 +74,14 @@ public class Optimal extends Replacer {
     public void run () {
         for (int i = 0; i < this.accessList.size(); i++) {
             if (!isAddressPresent(this.accessList.get(i).getPageNumber())) {
-                int victim = this.getNextVictim(i + 1);
+                int victim = this.getNextVictim();
                 frames[victim] = this.accessList.get(i).getPageNumber();
+                updateNextUseAuxiliar(i, victim);
                 pageFaultCount++;
                 System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
                 print();
+            } else {
+                updateNextUseAuxiliar();
             }
         }
     }
