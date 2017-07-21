@@ -39,10 +39,19 @@ public abstract class Replacer {
                 return true;
             }
         }
-
         return false;
     }
 
+    public void print() {
+        System.out.print("{");
+        for(int i = 0; i < frames.length; i++) {
+            System.out.print(frames[i]);
+            if(i < frames.length - 1)
+                System.out.print(",");
+        }
+        System.out.println("}");
+        System.out.println();
+    }
     /**
      * Try to access a determined address.
      */
