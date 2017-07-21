@@ -2,10 +2,13 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Optimal extends Replacer {
 
+    private int pagePosition[];
     /**
      * Initialize new Optimal instance.
      *
@@ -13,6 +16,8 @@ public class Optimal extends Replacer {
      */
     public Optimal (int framesNumber, ArrayList<LogicalAddress> accessList) {
         super(framesNumber, accessList);
+        pagePosition = new int[framesNumber];
+        Arrays.fill(pagePosition, -1);
     }
 
     private int distanceNextTime(int start, int andress) {
@@ -37,7 +42,7 @@ public class Optimal extends Replacer {
             tmpDistance = distanceNextTime(start, frames[i]);
             if(tmpDistance == -1)
                 return i;
-            
+
             if(tmpDistance > distance) {
                 distance = tmpDistance;
                 next = i;
