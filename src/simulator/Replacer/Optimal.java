@@ -2,7 +2,6 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 

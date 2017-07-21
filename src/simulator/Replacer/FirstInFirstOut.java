@@ -31,6 +31,7 @@ public class FirstInFirstOut extends Replacer {
                 nextVictim = (nextVictim + 1) % this.frames.length;
                 pageFaultCount++;
                 System.out.println("Page fault #" + pageFaultCount + " at address " + address.getPageNumber());
+                print();
             }
         }
     }

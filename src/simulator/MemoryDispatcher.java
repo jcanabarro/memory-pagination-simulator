@@ -1,6 +1,5 @@
 package simulator;
 
-import simulator.Address.LogicalAddress;
 import simulator.Replacer.Replacer;
 
 class MemoryDispatcher {
@@ -37,6 +36,7 @@ class MemoryDispatcher {
      * Perform the access.
      */
     void run () {
+        System.out.println("\uD83C\uDF21️ Initializing memory...");
         this.substitutionMethod.run();
     }
 }

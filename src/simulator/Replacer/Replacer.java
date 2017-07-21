@@ -30,10 +30,12 @@ public abstract class Replacer {
 
     /**
      * Verify if the address is allocated.
+     *
      * @param page The page identifier.
+     *
      * @return Present/Not present
      */
-    boolean isAddressPresent (int page){
+    boolean isAddressPresent (int page) {
         for (int frame : this.frames) {
             if (page == frame) {
                 return true;
@@ -42,16 +44,18 @@ public abstract class Replacer {
         return false;
     }
 
-    public void print() {
+    void print () {
         System.out.print("{");
-        for(int i = 0; i < frames.length; i++) {
-            System.out.print(frames[i]);
-            if(i < frames.length - 1)
+        for (int i = 0; i < frames.length; i++) {
+            System.out.print(frames[i] == -1 ? "Ø" : frames[i]);
+            if (i < frames.length - 1) {
                 System.out.print(",");
+            }
         }
         System.out.println("}");
         System.out.println();
     }
+
     /**
      * Try to access a determined address.
      */
