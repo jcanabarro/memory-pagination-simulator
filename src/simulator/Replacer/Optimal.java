@@ -18,21 +18,26 @@ public class Optimal extends Replacer {
     private int distanceNextTime(int start, int andress) {
         for(int i = start; i < this.accessList.size(); i++) {
             if(accessList.get(i).getPageNumber() == andress) {
-                int distance = i - start - 1;
+                int distance = i - start;
                 return distance;
             }
         }
-        return Integer.MAX_VALUE;
+
+        return -1;
     }
 
     private int getNextVictim (int start) {
         int next = -1;
         int distance = 0;
-        int tmpDistance;
+        int tmpDistance = -2;
         for(int i = 0; i < frames.length; i++) {
             if(frames[i] == -1)
                 return i;
+
             tmpDistance = distanceNextTime(start, frames[i]);
+            if(tmpDistance == -1)
+                return i;
+            
             if(tmpDistance > distance) {
                 distance = tmpDistance;
                 next = i;
