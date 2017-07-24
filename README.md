@@ -66,9 +66,9 @@ Are expected two differents outputs
 2. Final Results
 ```
 Method: FIFO
-Number of frame: 8
+Number of frames: 8
 Page size: 4096
-Displacement: 12 bits
+Offset: 12 bits
 Address: 20 bits
 ----------------------------------------
 | Number of page fault |       20      |

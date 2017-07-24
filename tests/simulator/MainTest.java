@@ -29,7 +29,12 @@ class MainTest {
     @Test
     void testMainOptimalWithThreeFramesAndSilberschatzExample () {
         Main.main(new String[]{"/home/luiz/GHP/memory-pagination-simulator/traces/silberschatz.txt", "optimal", "3"});
-        assertEquals("\uD83C\uDF21️ Initializing memory...\n" +
+        assertEquals("Method: Optimal\n" +
+                "Number of frames: 3\n" +
+                "Frames/Pages size: 144 addresses.\n" +
+                "\tOffset: 12 bits\n" +
+                "\tAddress: 20 bits\n\n" +
+                "\uD83C\uDF21️ Initializing memory...\n" +
                 "Page fault #1 at address 7 in position 0\n" +
                 "{7,Ø,Ø}\n" +
                 "\n" +
@@ -63,7 +68,12 @@ class MainTest {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
         Main.main(new String[]{"/home/luiz/GHP/memory-pagination-simulator/traces/silberschatz.txt", "fifo", "3"});
-        assertEquals("\uD83C\uDF21️ Initializing memory...\n" +
+        assertEquals("Method: FIFO\n" +
+                "Number of frames: 3\n" +
+                "Frames/Pages size: 144 addresses.\n" +
+                "\tOffset: 12 bits\n" +
+                "\tAddress: 20 bits\n\n" +
+                "\uD83C\uDF21️ Initializing memory...\n" +
                 "Page fault #1 at address 7\n" +
                 "{7,Ø,Ø}\n" +
                 "\n" +

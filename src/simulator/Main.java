@@ -72,17 +72,25 @@ public class Main {
         switch (selectedMethod) {
             case ALL_METHODS:
                 replacer = new MemoryDispatcher(null, frameSize);
+                System.out.println("Method: Optimal & FIFO");
                 break;
             case FIFO_METHOD:
                 replacer = new MemoryDispatcher(new FirstInFirstOut(frames, accessList), frameSize);
+                System.out.println("Method: FIFO");
                 break;
             case OPTIMAL_METHOD:
                 replacer = new MemoryDispatcher(new Optimal(frames, accessList), frameSize);
+                System.out.println("Method: Optimal");
                 break;
             default:
                 replacer = new MemoryDispatcher(null, frameSize);
                 break;
         }
+
+        System.out.println("Number of frames: " +  frames);
+        System.out.println("Frames/Pages size: " +  (int) Math.pow(frameSize, 2) + " addresses.");
+        System.out.println("\tOffset: " + frameSize + " bits");
+        System.out.println("\tAddress: " + (32 - frameSize) + " bits\n");
 
         replacer.run();
     }

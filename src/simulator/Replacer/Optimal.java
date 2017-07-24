@@ -61,7 +61,9 @@ public class Optimal extends Replacer {
 
     private void updateNextUseAuxiliar() {
         for (int i = 0; i < nextUseAuxiliar.length; i++) {
-            if (nextUseAuxiliar[i] != EMPTY) {
+            if (nextUseAuxiliar[i] == 0) {
+                nextUseAuxiliar[i] = distanceToNextUse(i, frames[i]);
+            } else if (nextUseAuxiliar[i] != EMPTY) {
                 nextUseAuxiliar[i]--;
             }
         }
@@ -78,8 +80,8 @@ public class Optimal extends Replacer {
                 frames[victim] = this.accessList.get(i).getPageNumber();
                 updateNextUseAuxiliar(i, victim);
                 pageFaultCount++;
-                System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
-                print();
+                //System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
+                //print();
             } else {
                 updateNextUseAuxiliar();
             }
