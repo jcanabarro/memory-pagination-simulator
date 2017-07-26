@@ -57,11 +57,6 @@ public class Main {
     private static ArrayList<LogicalAddress> accessList;
 
     /**
-     * Hash table of the "time points" where each access will be claimed.
-     */
-    private static Hashtable<Integer, ArrayList<Integer>> accessPoints;
-
-    /**
      * The simulator entry point.
      *
      * @param args The command line arguments.
@@ -70,7 +65,6 @@ public class Main {
         try {
             readArgs(args);
             readFile(fileLocation);
-            fillHashTable();
         } catch (InvalidArgumentsException | InvalidFrameSizeException | IOException | InvalidFramesNumberException e) {
             System.err.println(e.getMessage());
             System.exit(1);
@@ -147,17 +141,6 @@ public class Main {
                 throw new InvalidFrameSizeException();
             }
         }
-    }
-
-    private static void fillHashTable()
-    {
-        accessPoints = new Hashtable<>(8);
-        for (int i = 0; i < accessList.size(); i++) {
-            ArrayList<Integer> positionAddress = accessPoints.computeIfAbsent(accessList.get(i).getPageNumber(), k -> new ArrayList<>());
-            positionAddress.add(i);
-        }
-        System.out.println(accessPoints);
-        System.exit(1);
     }
 
     /**
