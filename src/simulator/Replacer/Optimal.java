@@ -39,11 +39,9 @@ public class Optimal extends Replacer {
 
     private int distanceToNextUse (int from, int address) {
         ArrayList<Integer> nextAccess = accessPoints.get(address);
-
         for (int i = 0; i < nextAccess.size(); i++) {
-            if(nextAccess.get(i) < from) continue;
-
-            return i;
+            if(nextAccess.get(i) <= from) continue;
+            return nextAccess.get(i) - from;
         }
 
         return EMPTY;
@@ -98,8 +96,10 @@ public class Optimal extends Replacer {
                 frames[victim] = this.accessList.get(i).getPageNumber();
                 updateNextUseAuxiliar(i, victim);
                 pageFaultCount++;
-                System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
-                print();
+                if (i == this.accessList.size() - 1) {
+                    System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
+                    print();
+                }
             } else {
                 updateNextUseAuxiliar();
             }
