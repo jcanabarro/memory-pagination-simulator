@@ -25,4 +25,8 @@ public class LogicalAddress {
     public void setPageNumber (int pageNumber) {
         this.pageNumber = pageNumber;
     }
+
+    public String toString() {
+        return "{ page: " + this.pageNumber + ", offset: " + this.offset + " }";
+    }
 }

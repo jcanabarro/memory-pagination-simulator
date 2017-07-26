@@ -4,12 +4,19 @@ import simulator.Address.LogicalAddress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 public class Optimal extends Replacer {
 
     private final static int EMPTY = -1;
 
     private int nextUseAuxiliar[];
+
+    /**
+     * Hash table of the "time points" where each access will be claimed.
+     */
+    private static Hashtable<Integer, ArrayList<Integer>> accessPoints;
+
 
     /**
      * Initialize new Optimal instance.
@@ -22,11 +29,19 @@ public class Optimal extends Replacer {
         Arrays.fill(nextUseAuxiliar, EMPTY);
     }
 
-    private int distanceToNextUse (int start, int address) {
-        for (int i = start + 1; i < this.accessList.size(); i++) {
-            if (accessList.get(i).getPageNumber() == address) {
-                return i - start;
-            }
+    private void fillHashTable() {
+        accessPoints = new Hashtable<>();
+        for (int i = 0; i < this.accessList.size(); i++) {
+            ArrayList<Integer> positionAddress = accessPoints.computeIfAbsent(accessList.get(i).getPageNumber(), k -> new ArrayList<>());
+            positionAddress.add(i);
+        }
+    }
+
+    private int distanceToNextUse (int from, int address) {
+        ArrayList<Integer> nextAccess = accessPoints.get(address);
+        for (int i = 0; i < nextAccess.size(); i++) {
+            if(nextAccess.get(i) <= from) continue;
+            return nextAccess.get(i) - from;
         }
 
         return EMPTY;
@@ -54,7 +69,11 @@ public class Optimal extends Replacer {
             } else if (nextUseAuxiliar[i] != EMPTY) {
                 nextUseAuxiliar[i]--;
             }
+<<<<<<< HEAD
             //System.out.print(nextUseAuxiliar[i] + ",");
+=======
+  //          System.out.print(nextUseAuxiliar[i] + ",");
+>>>>>>> e3ee4452e1a5312034405a8ea58916173e7e0671
         }
         //System.out.println("");
     }
@@ -74,14 +93,17 @@ public class Optimal extends Replacer {
      */
     @Override
     public void run () {
+        fillHashTable();
         for (int i = 0; i < this.accessList.size(); i++) {
             if (!isAddressPresent(this.accessList.get(i).getPageNumber())) {
                 int victim = this.getNextVictim();
                 frames[victim] = this.accessList.get(i).getPageNumber();
                 updateNextUseAuxiliar(i, victim);
                 pageFaultCount++;
-                //System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
-                //print();
+                if (i == this.accessList.size() - 1) {
+                    System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
+                    print();
+                }
             } else {
                 updateNextUseAuxiliar();
             }
