@@ -54,9 +54,9 @@ public class Optimal extends Replacer {
             } else if (nextUseAuxiliar[i] != EMPTY) {
                 nextUseAuxiliar[i]--;
             }
-//            System.out.print(nextUseAuxiliar[i] + ",");
+            //System.out.print(nextUseAuxiliar[i] + ",");
         }
-//        System.out.println("");
+        //System.out.println("");
     }
 
     private void updateNextUseAuxiliar() {
