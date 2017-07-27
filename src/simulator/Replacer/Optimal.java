@@ -119,7 +119,6 @@ public class Optimal extends Replacer {
                 updateNextUseAuxiliar(victim);
                 pageFaultCount++;
                 if (i == this.accessList.size() - 1) {
-//                    System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
                     printFaultPage(this.accessList.get(i).getPageNumber(), victim);
                     printFrames();
                 }
