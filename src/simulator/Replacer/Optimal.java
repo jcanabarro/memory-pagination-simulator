@@ -2,6 +2,9 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -111,23 +114,21 @@ public class Optimal extends Replacer {
     @Override
     public void run() {
         fillHashTable();
-        for (int i = 0; i < this.accessList.size(); i++) {
-            if (!isAddressPresent(this.accessList.get(i).getPageNumber())) {
+        long startTime = System.nanoTime();
+        for (LogicalAddress anAccessList : this.accessList) {
+            if (!isAddressPresent(anAccessList.getPageNumber())) {
                 int victim;
                 victim = this.getNextVictim();
-                frames[victim] = this.accessList.get(i).getPageNumber();
+                frames[victim] = anAccessList.getPageNumber();
                 updateNextUseAuxiliar(victim);
                 pageFaultCount++;
-                if (i == this.accessList.size() - 1) {
-                    printFaultPage(this.accessList.get(i).getPageNumber(), victim);
-                    printFrames();
-                }
             } else {
                 updateNextUseAuxiliar();
-                if (i == this.accessList.size() - 1) {
-                    printNotFaultPage();
-                }
-            }
+           }
         }
+        long estimatedTime = System.nanoTime() - startTime;
+        double finalTime = estimatedTime/1000000000.0;
+        System.out.println("Execution Time : " + new DecimalFormat("#.####").format(finalTime) + " Seconds");
+        finalTable();
     }
 }

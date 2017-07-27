@@ -60,8 +60,30 @@ public abstract class Replacer {
         System.out.println("Page fault #" + pageFaultCount + " at address " + address + " in position " + victim);
     }
 
-    void printNotFaultPage(){
-        System.out.println("The page it's in the frames");
+    private String indentation(String text) {
+        int qtdSpace = 0;
+        if (14 >= text.length()) {
+            qtdSpace = 14 - text.length();
+            StringBuilder textBuilder = new StringBuilder(text);
+            for (int i = 0; i < qtdSpace; i++) {
+                textBuilder.append(" ");
+            }
+            text = textBuilder.toString();
+            return text;
+        } else {
+            StringBuilder temp = new StringBuilder();
+            for (int i = 0; i < 14 - 3; i++) {
+                temp.append(text.charAt(i));
+            }
+            temp.append("...");
+            return temp.toString();
+        }
+    }
+
+    void finalTable(){
+        System.out.println("----------------------------------------");
+        System.out.println("| Number of page fault | " +  indentation(Integer.toString(pageFaultCount))+ "|");
+        System.out.println("----------------------------------------");
     }
 
     /**

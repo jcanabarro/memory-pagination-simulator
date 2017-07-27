@@ -89,7 +89,7 @@ public class Main {
         }
 
         System.out.println("Number of frames: " +  frames);
-        System.out.println("Frames/Pages size: " +  (int) Math.pow(frameSize, 2) + " addresses.");
+        System.out.println("Frames/Pages size: " +  (int) Math.pow(2, frameSize) + " addresses.");
         System.out.println("\tOffset: " + frameSize + " bits");
         System.out.println("\tAddress: " + (32 - frameSize) + " bits\n");
 

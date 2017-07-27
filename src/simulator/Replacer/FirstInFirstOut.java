@@ -2,6 +2,7 @@ package simulator.Replacer;
 
 import simulator.Address.LogicalAddress;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class FirstInFirstOut extends Replacer {
@@ -25,14 +26,17 @@ public class FirstInFirstOut extends Replacer {
      */
     @Override
     public void run () {
+        long startTime = System.nanoTime();
         for (LogicalAddress address : this.accessList) {
             if (!isAddressPresent(address.getPageNumber())) {
                 frames[nextVictim] = address.getPageNumber();
                 nextVictim = (nextVictim + 1) % this.frames.length;
                 pageFaultCount++;
-                printFaultPage(address.getPageNumber(), nextVictim);
-                printFrames();
             }
         }
+        long estimatedTime = System.nanoTime() - startTime;
+        double finalTime = estimatedTime/1000000000.0;
+        System.out.println("Execution Time : " + new DecimalFormat("#.####").format(finalTime) + " Seconds");
+        finalTable();
     }
 }
