@@ -23,7 +23,7 @@ public class Optimal extends Replacer {
      *
      * @param framesNumber Number of frames.
      */
-    public Optimal (int framesNumber, ArrayList<LogicalAddress> accessList) {
+    public Optimal(int framesNumber, ArrayList<LogicalAddress> accessList) {
         super(framesNumber, accessList);
         nextUseAuxiliar = new int[framesNumber];
         Arrays.fill(nextUseAuxiliar, EMPTY);
@@ -37,25 +37,25 @@ public class Optimal extends Replacer {
         }
     }
 
-    private int distanceToNextUse (int address) {
+    private int distanceToNextUse(int address) {
         ArrayList<Integer> nextAccess = accessPoints.get(address);
         for (int i = 0; i < nextAccess.size(); i++) {
-            if(nextAccess.get(i) == -1) continue;
+            if (nextAccess.get(i) == -1) continue;
 
-            int dif = -1;
+            int dif;
 
-            if(i < nextAccess.size() - 1)
+            if (i < nextAccess.size() - 1)
                 dif = nextAccess.get(i + 1) - nextAccess.get(i);
             else
                 dif = EMPTY;
-            nextAccess.set(i,-1);
+            nextAccess.set(i, -1);
             return dif;
         }
 
         return EMPTY;
     }
 
-    private int getNextVictim () {
+    private int getNextVictim() {
         int biggestValue = 0;
         int indexOfBiggestValue = EMPTY;
         for (int i = 0; i < nextUseAuxiliar.length; i++) {
@@ -81,15 +81,15 @@ public class Optimal extends Replacer {
     }
 
     private void printAux() {
-        for (int i = 0; i < nextUseAuxiliar.length; i++) {
-            System.out.print(nextUseAuxiliar[i] + ",");
+        for (int aNextUseAuxiliar : nextUseAuxiliar) {
+            System.out.print(aNextUseAuxiliar + ",");
         }
         System.out.println("");
     }
 
     private void updateNextUseAuxiliar() {
         for (int i = 0; i < nextUseAuxiliar.length; i++) {
-            if(nextUseAuxiliar[i] > 0) {
+            if (nextUseAuxiliar[i] > 0) {
                 nextUseAuxiliar[i]--;
             }
 
@@ -104,29 +104,30 @@ public class Optimal extends Replacer {
             System.out.println(key + ":" + accessPoints.get(key));
         }
     }
+
     /**
      * Execute the memory access.
      */
     @Override
-    public void run () {
+    public void run() {
         fillHashTable();
         for (int i = 0; i < this.accessList.size(); i++) {
             if (!isAddressPresent(this.accessList.get(i).getPageNumber())) {
-                int victim = this.getNextVictim();
+                int victim;
+                victim = this.getNextVictim();
                 frames[victim] = this.accessList.get(i).getPageNumber();
                 updateNextUseAuxiliar(victim);
                 pageFaultCount++;
                 if (i == this.accessList.size() - 1) {
-                    System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
-                    //printAux();
-                    print();
+//                    System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
+                    printFaultPage(this.accessList.get(i).getPageNumber(), victim);
+                    printFrames();
                 }
             } else {
                 updateNextUseAuxiliar();
-                //printHash();
-                //System.out.println("nao falhou");
-                //printAux();
-                //print();
+                if (i == this.accessList.size() - 1) {
+                    printNotFaultPage();
+                }
             }
         }
     }

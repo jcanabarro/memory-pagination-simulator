@@ -44,7 +44,7 @@ public abstract class Replacer {
         return false;
     }
 
-    void print () {
+    void printFrames () {
         System.out.print("{");
         for (int i = 0; i < frames.length; i++) {
             System.out.print(frames[i] == -1 ? "Ø" : frames[i]);
@@ -54,6 +54,14 @@ public abstract class Replacer {
         }
         System.out.println("}");
         System.out.println();
+    }
+
+    void printFaultPage(int address , int victim){
+        System.out.println("Page fault #" + pageFaultCount + " at address " + address + " in position " + victim);
+    }
+
+    void printNotFaultPage(){
+        System.out.println("The page it's in the frames");
     }
 
     /**
