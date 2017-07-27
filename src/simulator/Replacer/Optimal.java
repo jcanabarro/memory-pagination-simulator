@@ -37,11 +37,19 @@ public class Optimal extends Replacer {
         }
     }
 
-    private int distanceToNextUse (int from, int address) {
+    private int distanceToNextUse (int address) {
         ArrayList<Integer> nextAccess = accessPoints.get(address);
         for (int i = 0; i < nextAccess.size(); i++) {
-            if(nextAccess.get(i) <= from) continue;
-            return nextAccess.get(i) - from;
+            if(nextAccess.get(i) == -1) continue;
+
+            int dif = -1;
+
+            if(i < nextAccess.size() - 1)
+                dif = nextAccess.get(i + 1) - nextAccess.get(i);
+            else
+                dif = EMPTY;
+            nextAccess.set(i,-1);
+            return dif;
         }
 
         return EMPTY;
@@ -62,32 +70,40 @@ public class Optimal extends Replacer {
         return indexOfBiggestValue;
     }
 
-    private void updateNextUseAuxiliar(int from, int newest) {
+    private void updateNextUseAuxiliar(int victim) {
         for (int i = 0; i < nextUseAuxiliar.length; i++) {
-            if (i == newest || nextUseAuxiliar[i] == 1) {
-                nextUseAuxiliar[i] = distanceToNextUse(from, frames[newest]);
+            if (i == victim || nextUseAuxiliar[i] == 1) {
+                nextUseAuxiliar[i] = distanceToNextUse(frames[victim]);
             } else if (nextUseAuxiliar[i] != EMPTY) {
                 nextUseAuxiliar[i]--;
             }
-<<<<<<< HEAD
-            //System.out.print(nextUseAuxiliar[i] + ",");
-=======
-  //          System.out.print(nextUseAuxiliar[i] + ",");
->>>>>>> e3ee4452e1a5312034405a8ea58916173e7e0671
         }
-        //System.out.println("");
+    }
+
+    private void printAux() {
+        for (int i = 0; i < nextUseAuxiliar.length; i++) {
+            System.out.print(nextUseAuxiliar[i] + ",");
+        }
+        System.out.println("");
     }
 
     private void updateNextUseAuxiliar() {
         for (int i = 0; i < nextUseAuxiliar.length; i++) {
-            if (nextUseAuxiliar[i] == 0) {
-                nextUseAuxiliar[i] = distanceToNextUse(i, frames[i]);
-            } else if (nextUseAuxiliar[i] != EMPTY) {
+            if(nextUseAuxiliar[i] > 0) {
                 nextUseAuxiliar[i]--;
+            }
+
+            if (nextUseAuxiliar[i] == 0) {
+                nextUseAuxiliar[i] = distanceToNextUse(frames[i]);
             }
         }
     }
 
+    private void printHash() {
+        for (int key : accessPoints.keySet()) {
+            System.out.println(key + ":" + accessPoints.get(key));
+        }
+    }
     /**
      * Execute the memory access.
      */
@@ -98,14 +114,19 @@ public class Optimal extends Replacer {
             if (!isAddressPresent(this.accessList.get(i).getPageNumber())) {
                 int victim = this.getNextVictim();
                 frames[victim] = this.accessList.get(i).getPageNumber();
-                updateNextUseAuxiliar(i, victim);
+                updateNextUseAuxiliar(victim);
                 pageFaultCount++;
                 if (i == this.accessList.size() - 1) {
                     System.out.println("Page fault #" + pageFaultCount + " at address " + this.accessList.get(i).getPageNumber() + " in position " + victim);
+                    //printAux();
                     print();
                 }
             } else {
                 updateNextUseAuxiliar();
+                //printHash();
+                //System.out.println("nao falhou");
+                //printAux();
+                //print();
             }
         }
     }
